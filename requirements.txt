@@ -3,7 +3,8 @@ uvicorn
 sqlalchemy
 psycopg2-binary
 python-jose
-passlib[bcrypt==4.0.1]
+passlib[bcrypt]
+bcrypt==4.0.1
 python-multipart
 pydantic
 cloudinary
