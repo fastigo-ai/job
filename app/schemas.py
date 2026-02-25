@@ -29,8 +29,9 @@ class TradeResponse(BaseModel):
     trade_name: str
     salary: str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }   
 class TermResponse(BaseModel):
     id: int
     duty_hours: str
@@ -40,8 +41,9 @@ class TermResponse(BaseModel):
     contract: str
     age_limit: str
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
         
 class JobResponse(BaseModel):
     id: int
@@ -64,5 +66,6 @@ class JobDetailResponse(BaseModel):
     trades: List[TradeResponse]
     terms: Optional[TermResponse]
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True 
+    }
