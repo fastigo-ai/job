@@ -82,29 +82,67 @@ def update_job(
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
+    # -------------------------
+    # Update Main Job Fields
+    # -------------------------
     job.title = title
     job.company_name = company_name
     job.location = location
     job.salary_range = salary_range
 
-    # Delete old trades & terms
-    db.query(Trade).filter(Trade.job_id == job_id).delete()
-    db.query(Term).filter(Term.job_id == job_id).delete()
-
-    # Add new trades
+    # -------------------------
+    # Update Trades Smartly
+    # -------------------------
     trades_list = json.loads(trades)
-    for t in trades_list:
-        db.add(
-            Trade(
-                trade_name=t["trade_name"],
-                salary=t["salary"],
-                job_id=job.id
-            )
-        )
 
-    # Add new terms
+    # Remove trades not present anymore
+    existing_trades = db.query(Trade).filter(Trade.job_id == job_id).all()
+    existing_trade_ids = [t.id for t in existing_trades]
+
+    incoming_trade_ids = [t.get("id") for t in trades_list if t.get("id")]
+
+    # Delete removed trades
+    for trade in existing_trades:
+        if trade.id not in incoming_trade_ids:
+            db.delete(trade)
+
+    # Update or Create trades
+    for t in trades_list:
+        if "id" in t and t["id"]:
+            # Update existing trade
+            trade_obj = db.query(Trade).filter(
+                Trade.id == t["id"],
+                Trade.job_id == job_id
+            ).first()
+
+            if trade_obj:
+                trade_obj.trade_name = t["trade_name"]
+                trade_obj.salary = t["salary"]
+        else:
+            # Add new trade
+            db.add(
+                Trade(
+                    trade_name=t["trade_name"],
+                    salary=t["salary"],
+                    job_id=job.id
+                )
+            )
+
+    # -------------------------
+    # Update Terms
+    # -------------------------
     terms_data = json.loads(terms)
-    db.add(Term(job_id=job.id, **terms_data))
+    existing_terms = db.query(Term).filter(Term.job_id == job_id).first()
+
+    if existing_terms:
+        existing_terms.duty_hours = terms_data["duty_hours"]
+        existing_terms.food = terms_data["food"]
+        existing_terms.accommodation = terms_data["accommodation"]
+        existing_terms.ot_policy = terms_data["ot_policy"]
+        existing_terms.contract = terms_data["contract"]
+        existing_terms.age_limit = terms_data["age_limit"]
+    else:
+        db.add(Term(job_id=job.id, **terms_data))
 
     db.commit()
 
