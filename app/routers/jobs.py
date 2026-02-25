@@ -1,5 +1,4 @@
 from http.client import HTTPException
-
 from fastapi import APIRouter, Depends, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List
@@ -67,3 +66,46 @@ def delete_job(job_id: int, db: Session = Depends(get_db)):
     db.delete(job)
     db.commit()
     return {"message": "Deleted"}
+@router.put("/{job_id}", dependencies=[Depends(get_current_admin)])
+def update_job(
+    job_id: int,
+    title: str = Form(...),
+    company_name: str = Form(...),
+    location: str = Form(...),
+    salary_range: str = Form(...),
+    trades: str = Form(...),
+    terms: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    job = db.query(Job).filter(Job.id == job_id).first()
+
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    job.title = title
+    job.company_name = company_name
+    job.location = location
+    job.salary_range = salary_range
+
+    # Delete old trades & terms
+    db.query(Trade).filter(Trade.job_id == job_id).delete()
+    db.query(Term).filter(Term.job_id == job_id).delete()
+
+    # Add new trades
+    trades_list = json.loads(trades)
+    for t in trades_list:
+        db.add(
+            Trade(
+                trade_name=t["trade_name"],
+                salary=t["salary"],
+                job_id=job.id
+            )
+        )
+
+    # Add new terms
+    terms_data = json.loads(terms)
+    db.add(Term(job_id=job.id, **terms_data))
+
+    db.commit()
+
+    return {"message": "Job updated successfully"}

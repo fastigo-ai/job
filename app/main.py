@@ -27,7 +27,7 @@ app = FastAPI(
 # ---------------------------------------------------
 
 origins = [
-    "http://localhost:3000",  # local frontend
+    "http://localhost:8081",  # local frontend
     "https://your-frontend.vercel.app",  # production frontend
 ]
 
