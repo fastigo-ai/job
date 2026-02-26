@@ -28,7 +28,7 @@ app = FastAPI(
 
 origins = [
     "http://localhost:8081",  # local frontend
-    "https://your-frontend.vercel.app",  # production frontend
+    "https://www.brightrouteent.com",  # production frontend
 ]
 
 app.add_middleware(
