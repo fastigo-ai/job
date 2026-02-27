@@ -4,10 +4,10 @@ from sqlalchemy.orm import Session
 from typing import List
 import json
 from app.database import get_db
-from app.models import Job
-from app.schemas import JobResponse,JobDetailResponse
+from app.models import Job, JobApplication
+from app.schemas import JobResponse,JobDetailResponse,ApplicationResponse
 from app.dependencies import get_current_admin
-from app.services.cloudinary_service import upload_image
+from app.services.cloudinary_service import upload_image,upload_resume
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
@@ -147,3 +147,40 @@ def update_job(
     db.commit()
 
     return {"message": "Job updated successfully"}
+@router.post("/{job_id}/apply")
+def apply_for_job(
+    job_id: int,
+    # trade: str = Form(...),
+    mobile_number: str = Form(...),
+    resume: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+    job = db.query(Job).filter(Job.id == job_id).first()
+
+    if not job:
+        raise HTTPException(status_code=404, detail="Job not found")
+
+    # Upload PDF as RAW
+    resume_url = upload_resume(resume.file)
+
+    application = JobApplication(
+        # trade=trade,
+        mobile_number=mobile_number,
+        resume_url=resume_url,
+        job_id=job_id
+    )
+
+    db.add(application)
+    db.commit()
+
+    return {"message": "Application submitted successfully"}
+@router.get("/{job_id}/applications", response_model=List[ApplicationResponse], dependencies=[Depends(get_current_admin)])
+def get_job_applications(
+    job_id: int,
+    db: Session = Depends(get_db)
+):
+    applications = db.query(JobApplication).filter(
+        JobApplication.job_id == job_id
+    ).all()
+
+    return applications

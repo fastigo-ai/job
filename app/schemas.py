@@ -69,3 +69,12 @@ class JobDetailResponse(BaseModel):
     model_config = {
         "from_attributes": True 
     }
+class ApplicationResponse(BaseModel):
+    id: int
+    # trade: str
+    mobile_number: str
+    resume_url: str
+
+    model_config = {
+        "from_attributes": True
+    }

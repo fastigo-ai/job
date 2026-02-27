@@ -16,3 +16,10 @@ cloudinary.config(
 def upload_image(file):
     result = cloudinary.uploader.upload(file)
     return result["secure_url"]
+def upload_resume(file):
+    result = cloudinary.uploader.upload(
+        file,
+        resource_type="raw",     # IMPORTANT
+        folder="job_resumes"
+    )
+    return result["secure_url"]

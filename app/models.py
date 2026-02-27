@@ -21,11 +21,25 @@ class Job(Base):
     location = Column(String)
     salary_range = Column(String)
     job_image_url = Column(String)
+    applications = relationship(
+    "JobApplication",
+    back_populates="job",
+    cascade="all, delete-orphan")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # trades = relationship("Trade", back_populates="job", cascade="all, delete")
     # terms = relationship("Term", back_populates="job", uselist=False, cascade="all, delete")
+class JobApplication(Base):
+    __tablename__ = "job_applications"
 
+    id = Column(Integer, primary_key=True, index=True)
+    # trade = Column(String)
+    mobile_number = Column(String)
+    resume_url = Column(String)
+
+    job_id = Column(Integer, ForeignKey("jobs.id"))
+
+    job = relationship("Job", back_populates="applications")
 
 # class Trade(Base):
 #     __tablename__ = "trades"
