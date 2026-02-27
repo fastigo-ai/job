@@ -23,31 +23,31 @@ class Job(Base):
     job_image_url = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    trades = relationship("Trade", back_populates="job", cascade="all, delete")
-    terms = relationship("Term", back_populates="job", uselist=False, cascade="all, delete")
+    # trades = relationship("Trade", back_populates="job", cascade="all, delete")
+    # terms = relationship("Term", back_populates="job", uselist=False, cascade="all, delete")
 
 
-class Trade(Base):
-    __tablename__ = "trades"
+# class Trade(Base):
+#     __tablename__ = "trades"
 
-    id = Column(Integer, primary_key=True, index=True)
-    trade_name = Column(String)
-    salary = Column(String)
-    job_id = Column(Integer, ForeignKey("jobs.id"))
+#     id = Column(Integer, primary_key=True, index=True)
+#     trade_name = Column(String)
+#     salary = Column(String)
+#     job_id = Column(Integer, ForeignKey("jobs.id"))
 
-    job = relationship("Job", back_populates="trades")
+#     job = relationship("Job", back_populates="trades")
 
 
-class Term(Base):
-    __tablename__ = "terms"
+# class Term(Base):
+#     __tablename__ = "terms"
 
-    id = Column(Integer, primary_key=True, index=True)
-    duty_hours = Column(String)
-    food = Column(String)
-    accommodation = Column(String)
-    ot_policy = Column(String)
-    contract = Column(String)
-    age_limit = Column(String)
-    job_id = Column(Integer, ForeignKey("jobs.id"))
+#     id = Column(Integer, primary_key=True, index=True)
+#     duty_hours = Column(String)
+#     food = Column(String)
+#     accommodation = Column(String)
+#     ot_policy = Column(String)
+#     contract = Column(String)
+#     age_limit = Column(String)
+#     job_id = Column(Integer, ForeignKey("jobs.id"))
 
-    job = relationship("Job", back_populates="terms")
+#     job = relationship("Job", back_populates="terms")

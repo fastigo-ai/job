@@ -2,18 +2,18 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 
-class TradeCreate(BaseModel):
-    trade_name: str
-    salary: str
+# class TradeCreate(BaseModel):
+#     trade_name: str
+#     salary: str
 
 
-class TermCreate(BaseModel):
-    duty_hours: str
-    food: str
-    accommodation: str
-    ot_policy: str
-    contract: str
-    age_limit: str
+# class TermCreate(BaseModel):
+#     duty_hours: str
+#     food: str
+#     accommodation: str
+#     ot_policy: str
+#     contract: str
+#     age_limit: str
 
 
 class JobCreate(BaseModel):
@@ -21,29 +21,29 @@ class JobCreate(BaseModel):
     company_name: str
     location: str
     salary_range: str
-    trades: List[TradeCreate]
-    terms: TermCreate
+    # trades: List[TradeCreate]
+    # terms: TermCreate
 
-class TradeResponse(BaseModel):
-    id: int
-    trade_name: str
-    salary: str
+# class TradeResponse(BaseModel):
+#     id: int
+#     trade_name: str
+#     salary: str
 
-    model_config = {
-        "from_attributes": True
-    }   
-class TermResponse(BaseModel):
-    id: int
-    duty_hours: str
-    food: str
-    accommodation: str
-    ot_policy: str
-    contract: str
-    age_limit: str
+#     model_config = {
+#         "from_attributes": True
+    # }   
+# class TermResponse(BaseModel):
+#     id: int
+#     duty_hours: str
+#     food: str
+#     accommodation: str
+#     ot_policy: str
+#     contract: str
+#     age_limit: str
 
-    model_config = {
-        "from_attributes": True
-    }
+#     model_config = {
+#         "from_attributes": True
+#     }
         
 class JobResponse(BaseModel):
     id: int
@@ -63,8 +63,8 @@ class JobDetailResponse(BaseModel):
     location: str
     salary_range: str
     job_image_url: str
-    trades: List[TradeResponse]
-    terms: Optional[TermResponse]
+    # trades: List[TradeResponse]
+    # terms: Optional[TermResponse]
 
     model_config = {
         "from_attributes": True 
