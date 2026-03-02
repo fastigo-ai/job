@@ -1,4 +1,5 @@
 import cloudinary
+import cloudinary.utils
 import cloudinary.uploader
 from app.config import (
     CLOUDINARY_CLOUD_NAME,
@@ -20,6 +21,17 @@ def upload_resume(file):
     result = cloudinary.uploader.upload(
         file,
         resource_type="raw",     # IMPORTANT
-        folder="job_resumes"
+        folder="job_resumes",
+        format="pdf"
     )
-    return result["secure_url"]
+    return {
+        "url": result["secure_url"],
+        "public_id": result["public_id"]
+    }
+def get_downloadable_resume_url(public_id):
+    url, _ = cloudinary.utils.cloudinary_url(
+        public_id,
+        resource_type="raw",
+        flags="attachment"
+    )
+    return url

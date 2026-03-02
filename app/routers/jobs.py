@@ -7,7 +7,7 @@ from app.database import get_db
 from app.models import Job, JobApplication
 from app.schemas import JobResponse,JobDetailResponse,ApplicationResponse
 from app.dependencies import get_current_admin
-from app.services.cloudinary_service import upload_image,upload_resume
+from app.services.cloudinary_service import upload_image,upload_resume,get_downloadable_resume_url
 
 router = APIRouter(prefix="/jobs", tags=["Jobs"])
 
@@ -161,12 +161,15 @@ def apply_for_job(
         raise HTTPException(status_code=404, detail="Job not found")
 
     # Upload PDF as RAW
-    resume_url = upload_resume(resume.file)
+    # resume_url = upload_resume(resume.file)
+    upload_result = upload_resume(resume.file)
+    resume_url = upload_result["url"]
 
     application = JobApplication(
         # trade=trade,
         mobile_number=mobile_number,
         resume_url=resume_url,
+        resume_public_id=upload_result["public_id"],
         job_id=job_id
     )
 
@@ -182,5 +185,11 @@ def get_job_applications(
     applications = db.query(JobApplication).filter(
         JobApplication.job_id == job_id
     ).all()
+    # Convert resume_url into forced download URL
+    for application in applications:
+        if application.resume_public_id:
+            application.resume_url = get_downloadable_resume_url(
+                application.resume_public_id
+            )
 
     return applications

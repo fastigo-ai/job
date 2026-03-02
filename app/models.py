@@ -36,6 +36,7 @@ class JobApplication(Base):
     # trade = Column(String)
     mobile_number = Column(String)
     resume_url = Column(String)
+    resume_public_id = Column(String)
 
     job_id = Column(Integer, ForeignKey("jobs.id"))
 
