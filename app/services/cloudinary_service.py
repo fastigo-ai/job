@@ -32,6 +32,7 @@ def get_downloadable_resume_url(public_id):
     url, _ = cloudinary.utils.cloudinary_url(
         public_id,
         resource_type="raw",
-        flags="attachment"
+        flags="attachment",
+        secure=True
     )
     return url
