@@ -22,7 +22,7 @@ def upload_resume(file):
         file,
         resource_type="raw",     # IMPORTANT
         folder="job_resumes",
-        format="pdf"
+        # format="pdf"
     )
     return {
         "url": result["secure_url"],
